@@ -15,7 +15,7 @@ my $VIDCRPEDGE="vidCropEdge.mpg";
 # Use ffprobe's scene cut detection method where any value over $THRESH is assumed to be a scene cut (camera change)
 system("cp $PKT $VIDIN");
 system("ffmpeg -v 0 -y -i $VIDIN -an -c:v copy $VIDCNVRT");
-my $THRESH="0.2";
+my $THRESH=0.2;
 system("ffprobe -v 0 -show_frames -pretty $VIDCNVRT > ./info.txt");
 system("ffprobe -v 0 -show_frames -of compact=p=0 -f lavfi \"movie=$VIDCNVRT,select=gt(scene\\,$THRESH)\" > info.csv");
 my $KEYFRMRAT=&analyseInfo;
