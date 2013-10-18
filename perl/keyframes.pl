@@ -2,17 +2,26 @@
 
 use strict;
 use warnings;
+use File::Basename;
 
-my $VIDIN="../mpeg1_3ch.mpg";
+my $PKT="./mpeg1_3ch.pkt";
+my ($FN, $DIRS, $SF) = fileparse($PKT,qr"\..[^.]*$");
+my $VIDIN = $FN . '.mpg';
 my $VIDCNVRT="vid.m2v";
 my $VIDCRP="vidCrop.mpg";
 my $VIDCRPEDGE="vidCropEdge.mpg";
 
+# Use "key_frame" from ffprobe to determine camera change (where an I frame is assumed to be a camera change)
+# Use ffprobe's scene cut detection method where any value over $THRESH is assumed to be a scene cut (camera change)
+system("cp $PKT $VIDIN");
 system("ffmpeg -v 0 -y -i $VIDIN -an -c:v copy $VIDCNVRT");
+my $THRESH="0.2";
 system("ffprobe -v 0 -show_frames -pretty $VIDCNVRT > ./info.txt");
-system("ffprobe -v 0 -show_frames -of compact=p=0 -f lavfi \"movie=$VIDCNVRT,select=gt(scene\\,.2)\" > info.csv");
+system("ffprobe -v 0 -show_frames -of compact=p=0 -f lavfi \"movie=$VIDCNVRT,select=gt(scene\\,$THRESH)\" > info.csv");
 my $KEYFRMRAT=&analyseInfo;
 print "Keyframe ratio is $KEYFRMRAT\n";
+
+# Cropping out the camera overlay information
 system("ffmpeg -v 0 -y -i $VIDIN -vf \"crop=50:15:280:260\" -an $VIDCRP");
 system("ffmpeg -v 0 -y -i $VIDCRP -vf 'smartblur,edgedetect=low=0.1:high=0.4' $VIDCRPEDGE");
 system("ffprobe -v 0 -show_frames -pretty $VIDCRPEDGE > ./infoCropEdge.txt");
