@@ -1,0 +1,17 @@
+*.mpg
+*.pkt
+*.m2v
+cleanup.bat
+precision.bat
+clean.sh
+*.csv
+*.txt
+
+*.swp
+*.dll
+*.zip
+*.tar
+*.rar
+*.gzip
+*.un~
+*.gz

@@ -1,0 +1,17 @@
+*.log
+*.mpg
+*.pkt
+*.avi
+output_batch/
+output_ffmpeg/
+cleanup.bat
+precision.bat
+
+*.swp
+*.dll
+*.zip
+*.tar
+*.rar
+*.gzip
+*.un~
+*.gz
