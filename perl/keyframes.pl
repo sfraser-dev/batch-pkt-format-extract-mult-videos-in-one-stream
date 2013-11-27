@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 # NetMC .pkt video analysis.
 # Uses FFPROBE to look for keyframes (I frames) and report the frequency of their occurance.
+# It is assummed there is a camera change {PORT, CENTRE, STBD} on each I-frame in .pkt videos.
 # Uses FFMPEG cropping (manual input of co-ordinates) to chop out camera overlay informtion.
 
 use strict;
