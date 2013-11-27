@@ -1,9 +1,13 @@
 #!/usr/bin/perl
+# NetMC .pkt video analysis.
+# Uses FFPROBE to look for keyframes (I frames) and report the frequency of their occurance.
+# Uses FFMPEG cropping (manual input of co-ordinates) to chop out camera overlay informtion.
 
 use strict;
 use warnings;
 use File::Basename;
 
+# Filename extension manipulation
 my $PKT="./mpeg1_3ch.pkt";
 my ($FN, $DIRS, $SF) = fileparse($PKT,qr"\..[^.]*$");
 my $VIDIN = $FN . '.mpg';
@@ -21,7 +25,7 @@ system("ffprobe -v 0 -show_frames -of compact=p=0 -f lavfi \"movie=$VIDCNVRT,sel
 my $KEYFRMRAT=&analyseInfo;
 print "Keyframe ratio is $KEYFRMRAT\n";
 
-# Cropping out the camera overlay information
+# Cropping out the camera overlay information, does this help detemine keyframes? (turns out it doesn't)
 system("ffmpeg -v 0 -y -i $VIDIN -vf \"crop=50:15:280:260\" -an $VIDCRP");
 system("ffmpeg -v 0 -y -i $VIDCRP -vf 'smartblur,edgedetect=low=0.1:high=0.4' $VIDCRPEDGE");
 system("ffprobe -v 0 -show_frames -pretty $VIDCRPEDGE > ./infoCropEdge.txt");
