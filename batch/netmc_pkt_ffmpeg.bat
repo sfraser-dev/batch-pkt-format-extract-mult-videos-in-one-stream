@@ -33,9 +33,19 @@ SET /A CENTRE_COUNTER=0
 SET /A PORT_COUNTER=0
 SET DEBUG="yes"
 
-:: Empty the output directories
-DEL %FFMPEG_IMG_DIR%\*.jpg
-DEL %OUTPUT_DIR%\*.jpg
+:: Delete / create the output directories
+IF EXIST %FFMPEG_IMG_DIR% (
+	DEL /q %FFMPEG_IMG_DIR%\*.*
+) ELSE (
+	MKDIR %FFMPEG_IMG_DIR%
+)
+IF EXIST %OUTPUT_DIR% (
+	DEL /q %OUTPUT_DIR%\*.*
+) ELSE (
+	MKDIR %OUTPUT_DIR%
+)
+:: Rename the .pkt video
+COPY /y mpeg1_3ch.pkt mpeg1_3ch.mpg
 
 :: Use FFMPEG to strip the video into individual images
 ffmpeg -y -i mpeg1_3ch.mpg -r %VID_FRM_RATE% -qscale:v 1 %FFMPEG_IMG_DIR%/ffimage.%%%FILENAME_PAD_PRECISION%d.jpg
